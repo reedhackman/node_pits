@@ -4,8 +4,7 @@ const updatePosition = async (page, index) => {
   try {
     const query = "UPDATE position SET page = $1, index = $2";
     const params = [page, index];
-    const res = await db.query(query, params);
-    console.log(res);
+    await db.query(query, params);
   } catch (err) {
     throw err;
   }
