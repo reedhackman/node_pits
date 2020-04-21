@@ -16,7 +16,13 @@ const getPlayer = async (id, name = null) => {
     const player = res.rows[0];
     if (!player) {
       await createPlayer(id, name);
-      return { id: id, name: name, rating: 1200, wins: 0, losses: 0 };
+      return {
+        id: id,
+        name: name,
+        rating: 1200,
+        wins: 0,
+        losses: 0
+      };
     }
     return player;
   } catch (err) {
@@ -31,7 +37,6 @@ const createPlayer = async (id, name) => {
       [id, name]
     );
   } catch (err) {
-    console.log(id, name);
     throw err;
   }
 };
@@ -43,7 +48,6 @@ const updatePlayer = async (id, player) => {
       [player.wins, player.losses, player.rating, player.id]
     );
   } catch (err) {
-    console.log(player);
     throw err;
   }
 };

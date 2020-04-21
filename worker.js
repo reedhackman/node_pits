@@ -10,26 +10,36 @@ class Worker {
   }
 
   async work() {
-    console.log(Date.now());
     try {
-      // const games = await tjpGames.getTjp();
-      // for (var i = 0; i < games.length; i++) {
-      //   const game = games[i];
-      //   await process.parseGame(game);
-      //   console.log(i);
-      // }
-      // await this.checkIncompleteGames();
+      let length = await this.task();
+      if (length === 50) {
+        setTimeout(() => {
+          this.work();
+        }, 1000); // 1 second
+      } else {
+        setTimeout(() => {
+          this.work();
+        }, 1000 * 60 * 5); // 5 minutes
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async task() {
+    console.log("Checking games - " + new Date(Date.now()).toLocaleString());
+    try {
       let games = await this.checkGames();
-      while (games.length === 50) {
-        const newGames = games.slice(this.index);
-        newGames.forEach(game => tjpGames.tjp(game));
+      const newGames = games.slice(this.index);
+      await process.processGames(newGames);
+      if (games.length === 50) {
         this.page++;
         this.index = 0;
-        games = await this.checkGames();
+      } else {
+        this.index = games.length;
       }
-      this.index = games.length;
       await position.update(this.page, this.index);
-      setTimeout(() => this.work(), 300000); // 5 min
+      return games.length;
     } catch (err) {
       throw err;
     }
@@ -52,6 +62,7 @@ class Worker {
 module.exports = {
   start: async () => {
     const [page, index] = await position.get();
+    console.log(`starting app. page: ${page}; index: ${index}`);
     const worker = new Worker(page, index);
     worker.work();
   }

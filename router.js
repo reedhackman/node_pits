@@ -4,7 +4,7 @@ const router = express.Router();
 const playerRoutes = require("./routes/players");
 
 router.use((req, res, next) => {
-  console.log(Date.now());
+  // console.log(req.originalUrl);
   next();
 });
 

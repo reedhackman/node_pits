@@ -32,3 +32,6 @@ CREATE TABLE incomplete (
   id integer NOT NULL,
   tournament_id integer NOT NULL
 );
+
+ALTER TABLE complete ADD COLUMN winner_rating float NOT NULL;
+ALTER TABLE complete ADD COLUMN loser_rating float NOT NULL;

@@ -1,6 +1,12 @@
 const gameQueries = require("../db/queries/games");
 const playerQueries = require("../db/queries/player");
 
+const processGames = async games => {
+  for (var i = 0; i < games.length; i++) {
+    await parseGame(games[i]);
+  }
+};
+
 const parseGame = async game => {
   if (game.p1_id < 1 || game.p2_id < 1) return;
   game.game_status === 100
@@ -11,32 +17,32 @@ const parseGame = async game => {
 const processComplete = async game => {
   let winnerId;
   let winnerName;
-  let winnerP;
   let loserId;
   let loserName;
-  let loserP;
   if (game.p1_points === game.p2_points) {
     // draw
     return;
   } else if (game.p1_points > game.p2_points) {
     winnerId = game.p1_id;
     winnerName = game.p1_name;
-    winnerP = "p1";
     loserId = game.p2_id;
     loserName = game.p2_name;
-    loserP = "p2";
   } else {
     winnerId = game.p2_id;
     winnerName = game.p2_name;
-    winnerP = "p2";
     loserId = game.p1_id;
     loserName = game.p1_name;
-    loserP = "p1";
   }
   let winner = await playerQueries.getPlayer(winnerId, winnerName);
   let loser = await playerQueries.getPlayer(loserId, loserName);
   processPlayerChange(winner, loser);
-  await gameQueries.createComplete(game, winnerP, loserP);
+  await gameQueries.createComplete(
+    game,
+    winnerId,
+    loserId,
+    winner.rating,
+    loser.rating
+  );
   await playerQueries.updatePlayer(winnerId, winner);
   await playerQueries.updatePlayer(loserId, loser);
 };
@@ -54,8 +60,11 @@ const updateRating = (winner, loser) => {
   const qL = Math.pow(10, loser.rating / 400);
   const eW = qW / (qW + qL);
   const eL = qL / (qW + qL);
-  winner.rating = winner.rating + k * (1 - eW);
-  loser.rating = loser.rating + k * (0 - eL);
+  const newWinnerRating =
+    Math.round(100 * (winner.rating + k * (1 - eW))) / 100;
+  const newLoserRating = Math.round(100 * (loser.rating + k * (0 - eL))) / 100;
+  winner.rating = newWinnerRating;
+  loser.rating = newLoserRating;
 };
 
 const processIncomplete = async game => {
@@ -63,5 +72,5 @@ const processIncomplete = async game => {
 };
 
 module.exports = {
-  parseGame: parseGame
+  processGames: processGames
 };

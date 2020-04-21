@@ -1,15 +1,23 @@
 const db = require("../../db");
 
-const createComplete = async (game, winnerP, loserP) => {
+const createComplete = async (
+  game,
+  winnerId,
+  loserId,
+  winnerRating,
+  loserRating
+) => {
   try {
     const res = await db.query(
-      "INSERT INTO complete (id, tournament_id, tournament_date, winner_id, loser_id) VALUES ($1, $2, $3, $4, $5)",
+      "INSERT INTO complete (id, tournament_id, tournament_date, winner_id, loser_id, winner_rating, loser_rating) VALUES ($1, $2, $3, $4, $5, $6, $7)",
       [
         game.game_id,
         game.tournament_id,
         game.tournament_date,
-        game[winnerP + "_id"],
-        game[loserP + "_id"]
+        winnerId,
+        loserId,
+        winnerRating,
+        loserRating
       ]
     );
   } catch (err) {
@@ -61,7 +69,7 @@ const createIncomplete = async game => {
 
 module.exports = {
   createComplete: createComplete,
-  createIncomplete: createIncomplete,
-  tjp: tjp,
-  getTjp: getTjp
+  createIncomplete: createIncomplete
+  // tjp: tjp,
+  // getTjp: getTjp
 };
