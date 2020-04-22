@@ -5,11 +5,15 @@ const createComplete = async (
   winnerId,
   loserId,
   winnerRating,
-  loserRating
+  loserRating,
+  winnerFaction,
+  winnerAgenda,
+  loserFaction,
+  loserAgenda
 ) => {
   try {
     const res = await db.query(
-      "INSERT INTO complete (id, tournament_id, tournament_date, winner_id, loser_id, winner_rating, loser_rating) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+      "INSERT INTO complete (id, tournament_id, tournament_date, winner_id, loser_id, winner_rating, loser_rating, winner_faction, winner_agenda, loser_faction, loser_agenda) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
       [
         game.game_id,
         game.tournament_id,
@@ -17,7 +21,11 @@ const createComplete = async (
         winnerId,
         loserId,
         winnerRating,
-        loserRating
+        loserRating,
+        winnerFaction,
+        winnerAgenda,
+        loserFaction,
+        loserAgenda,
       ]
     );
   } catch (err) {
@@ -25,7 +33,7 @@ const createComplete = async (
   }
 };
 
-const createIncomplete = async game => {
+const createIncomplete = async (game) => {
   try {
     await db.query(
       "INSERT INTO incomplete (id, tournament_id) VALUES ($1, $2)",
@@ -36,40 +44,7 @@ const createIncomplete = async game => {
   }
 };
 
-// const tjp = async game => {
-//   const params = [
-//     "game_id",
-//     "game_status",
-//     "tournament_id",
-//     "tournament_date",
-//     "tournament_name",
-//     "p1_id",
-//     "p1_name",
-//     "p1_faction",
-//     "p1_agenda",
-//     "p1_points",
-//     "p2_id",
-//     "p2_name",
-//     "p2_faction",
-//     "p2_agenda",
-//     "p2_points"
-//   ];
-//   const query = `INSERT INTO tjp (${params.join(", ")}) VALUES (${params
-//     .map((p, i) => "$" + (i + 1))
-//     .join(", ")})`;
-//   await db.query(query, params.map(key => game[key]));
-// };
-//
-// const getTjp = async () => {
-//   const query = "SELECT * FROM tjp ORDER BY game_id";
-//   const res = await db.query(query, []);
-//   const data = res.rows;
-//   return data;
-// };
-
 module.exports = {
   createComplete: createComplete,
-  createIncomplete: createIncomplete
-  // tjp: tjp,
-  // getTjp: getTjp
+  createIncomplete: createIncomplete,
 };

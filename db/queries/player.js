@@ -21,7 +21,7 @@ const getPlayer = async (id, name = null) => {
         name: name,
         rating: 1200,
         wins: 0,
-        losses: 0
+        losses: 0,
       };
     }
     return player;
@@ -41,7 +41,7 @@ const createPlayer = async (id, name) => {
   }
 };
 
-const updatePlayer = async (id, player) => {
+const updatePlayer = async (player) => {
   try {
     await db.query(
       "UPDATE players SET wins = $1, losses = $2, rating = $3 WHERE id = $4",
@@ -55,5 +55,5 @@ const updatePlayer = async (id, player) => {
 module.exports = {
   getPlayer: getPlayer,
   updatePlayer: updatePlayer,
-  listPlayers: listPlayers
+  listPlayers: listPlayers,
 };
