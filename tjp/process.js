@@ -1,5 +1,5 @@
 const gameQueries = require("../db/queries/games");
-const playerQueries = require("../db/queries/player");
+const playerQueries = require("../db/queries/players");
 const deckQueries = require("../db/queries/decks");
 
 const processGames = async (games) => {
@@ -96,6 +96,10 @@ const determineWinner = async (game) => {
       winningDeck = await getDeck(game.p2_faction, game.p2_agenda);
       losingDeck = await getDeck(game.p1_faction, game.p1_agenda);
     }
+    if (!game.p1_agenda || !game.p2_agenda) {
+      winningDeck = null;
+      losingDeck = null;
+    }
     return [winner, winningDeck, loser, losingDeck];
   } catch (err) {
     throw err;
@@ -118,6 +122,8 @@ const processDeckChange = async (winningDeck, losingDeck) => {
   try {
     winningDeck.wins++;
     losingDeck.losses++;
+    updatePercentPlayed(winningDeck);
+    updatePercentPlayed(losingDeck);
     await deckQueries.updateDeck(winningDeck);
     await deckQueries.updateDeck(losingDeck);
   } catch (err) {
@@ -130,11 +136,18 @@ const processPlayerChange = async (winner, loser) => {
     winner.wins++;
     loser.losses++;
     updateRating(winner, loser);
+    updatePercentPlayed(winner);
+    updatePercentPlayed(loser);
     await playerQueries.updatePlayer(winner);
     await playerQueries.updatePlayer(loser);
   } catch (err) {
     throw err;
   }
+};
+
+const updatePercentPlayed = (player) => {
+  player.played = player.wins + player.losses;
+  player.percent = player.wins / player.played;
 };
 
 const updateRating = (winner, loser) => {

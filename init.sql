@@ -1,3 +1,9 @@
+DROP TABLE position;
+DROP TABLE decks;
+DROP TABLE players;
+DROP TABLE complete;
+DROP TABLE incomplete;
+
 CREATE TABLE position (
   page integer NOT NULL,
   index integer NOT NULL
@@ -39,3 +45,17 @@ CREATE TABLE incomplete (
 
 ALTER TABLE complete ADD COLUMN winner_rating float NOT NULL;
 ALTER TABLE complete ADD COLUMN loser_rating float NOT NULL;
+
+ALTER TABLE players ADD COLUMN percent float;
+ALTER TABLE players ADD COLUMN played integer;
+UPDATE players SET played = wins + losses;
+UPDATE players SET percent = cast(wins as decimal) / played;
+ALTER TABLE players ALTER COLUMN percent SET NOT NULL;
+ALTER TABLE players ALTER COLUMN played SET NOT NULL;
+
+ALTER TABLE decks ADD COLUMN percent float;
+ALTER TABLE decks ADD COLUMN played integer;
+UPDATE decks SET played = wins + losses;
+UPDATE decks SET percent = cast(wins as decimal) / played;
+ALTER TABLE decks ALTER COLUMN percent SET NOT NULL;
+ALTER TABLE decks ALTER COLUMN played SET NOT NULL;

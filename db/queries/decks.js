@@ -1,17 +1,23 @@
 const db = require("../../db");
 
+const listDecks = async () => {
+  try {
+    const res = await db.query("SELECT * FROM decks", []);
+    const decks = res.rows;
+    return decks;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const getDeck = async (faction, agenda) => {
   try {
-    if (!faction) {
-      const deck = await getDeckNoFaction(agenda);
-      return deck;
-    } else if (!agenda) {
-      const deck = await getDeckNoAgenda(faction);
-      return deck;
-    } else {
-      const deck = await getDeckFull(faction, agenda);
-      return deck;
-    }
+    const deck = !faction
+      ? await getDeckNoFaction(agenda)
+      : !agenda
+      ? await getDeckNoAgenda(faction)
+      : await getDeckFull(faction, agenda);
+    return deck;
   } catch (err) {
     throw err;
   }
@@ -31,8 +37,11 @@ const getDeckNoFaction = async (agenda) => {
         agenda: agenda,
         wins: 0,
         losses: 0,
+        played: 0,
+        percent: 0,
       };
     }
+    return deck;
   } catch (err) {
     throw err;
   }
@@ -52,8 +61,11 @@ const getDeckNoAgenda = async (faction) => {
         agenda: null,
         wins: 0,
         losses: 0,
+        played: 0,
+        percent: 0,
       };
     }
+    return deck;
   } catch (err) {
     throw err;
   }
@@ -73,6 +85,8 @@ const getDeckFull = async (faction, agenda) => {
         agenda: agenda,
         wins: 0,
         losses: 0,
+        played: 0,
+        percent: 0,
       };
     }
     return deck;
@@ -84,7 +98,7 @@ const getDeckFull = async (faction, agenda) => {
 const createDeck = async (faction, agenda) => {
   try {
     await db.query(
-      "INSERT INTO decks (faction, agenda, wins, losses) VALUES ($1, $2, 0, 0)",
+      "INSERT INTO decks (faction, agenda, wins, losses, played, percent) VALUES ($1, $2, 0, 0, 0, 0)",
       [faction, agenda]
     );
   } catch (err) {
@@ -105,8 +119,8 @@ const updateDeck = async (deck) => {
 const updateDeckNoFaction = async (deck) => {
   try {
     await db.query(
-      "UPDATE decks SET wins = $2, losses = $3 WHERE faction IS NULL AND agenda = $1",
-      [deck.agenda, deck.wins, deck.losses]
+      "UPDATE decks SET wins = $2, losses = $3, played = $4, percent = $5 WHERE faction IS NULL AND agenda = $1",
+      [deck.agenda, deck.wins, deck.losses, deck.played, deck.percent]
     );
   } catch (err) {
     throw err;
@@ -116,8 +130,8 @@ const updateDeckNoFaction = async (deck) => {
 const updateDeckNoAgenda = async (deck) => {
   try {
     await db.query(
-      "UPDATE decks SET wins = $2, losses = $3 WHERE agenda IS NULL AND faction = $1",
-      [deck.faction, deck.wins, deck.losses]
+      "UPDATE decks SET wins = $2, losses = $3, played = $4, percent = $5 WHERE agenda IS NULL AND faction = $1",
+      [deck.faction, deck.wins, deck.losses, deck.played, deck.percent]
     );
   } catch (err) {
     throw err;
@@ -127,8 +141,15 @@ const updateDeckNoAgenda = async (deck) => {
 const updateDeckFull = async (deck) => {
   try {
     await db.query(
-      "UPDATE decks SET wins = $3, losses = $4 WHERE faction = $1 AND agenda = $2",
-      [deck.faction, deck.agenda, deck.wins, deck.losses]
+      "UPDATE decks SET wins = $3, losses = $4, played = $5, percent = $6 WHERE faction = $1 AND agenda = $2",
+      [
+        deck.faction,
+        deck.agenda,
+        deck.wins,
+        deck.losses,
+        deck.played,
+        deck.percent,
+      ]
     );
   } catch (err) {
     throw err;
@@ -136,6 +157,7 @@ const updateDeckFull = async (deck) => {
 };
 
 module.exports = {
+  listDecks: listDecks,
   getDeck: getDeck,
   updateDeck: updateDeck,
 };
