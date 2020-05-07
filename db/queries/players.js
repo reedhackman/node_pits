@@ -10,6 +10,19 @@ const listPlayers = async () => {
   }
 };
 
+const paginateSortPlayers = async (page, perPage, sort, sortDirection) => {
+  try {
+    const query = `SELECT * FROM players ORDER BY ${sort} ${sortDirection} LIMIT ${perPage} OFFSET ${
+      (page - 1) * perPage
+    }`;
+    const res = await db.query(query, []);
+    const data = res.rows;
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const getPlayer = async (id, name = null) => {
   try {
     const res = await db.query("SELECT * FROM players WHERE id = $1", [id]);
@@ -65,4 +78,5 @@ module.exports = {
   getPlayer: getPlayer,
   updatePlayer: updatePlayer,
   listPlayers: listPlayers,
+  paginateSortPlayers: paginateSortPlayers,
 };

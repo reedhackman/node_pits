@@ -22,6 +22,7 @@ var schema = buildSchema(`
 
   type Query {
     players: [Player]
+    playerTable(page: Int!, perPage: Int!, sort: String!, sortDirection: String!): [Player]
     player(id: Int!): Player
     decks: [Deck]
     deck(faction: String, agenda: String!): Deck

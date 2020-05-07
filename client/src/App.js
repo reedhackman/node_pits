@@ -1,40 +1,37 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment } from "react";
 import { useRoutes } from "hookrouter";
-// import logo from "./logo.svg";
-import "./App.css";
+import NavBar from "./common/NavBar";
+import AllPlayers from "./players/AllPlayers";
+import SpecificPlayer from "./players/SpecificPlayer";
+import Home from "./home/Home";
+import AllDecks from "./decks/AllDecks";
+import SpecificDeck from "./decks/SpecificDeck";
+// import "./App.css";
 
 const App = () => {
-  // const [state, setState] = useState(null);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await fetch(url);
-  //     const data = await res.json();
-  //   })();
-  // }, []);
-
   const routes = {
-    "/players*": () => <Players />,
-    "/decks/*": () => <div>decks</div>,
-    "/": () => <div>slash</div>,
-    "/*": () => <div>error</div>
+    "/players": () => <AllPlayers />,
+    "/players/:id": ({ id }) => <SpecificPlayer id={id} />,
+    "/decks": () => <AllDecks />,
+    "/decks/:faction/:agenda": ({ faction, agenda }) => (
+      <SpecificDeck faction={faction} agenda={agenda} />
+    ),
+    "/decks/The%20Free%20Folk": () => (
+      <SpecificDeck faction={null} agenda={"The Free Folk"} />
+    ),
+    "/": () => <Home />,
+    "*": () => <div>ERROR</div>,
   };
-
   const routeResult = useRoutes(routes);
-
-  return <Fragment>{routeResult}</Fragment>;
-};
-
-const Players = () => {
-  const routes = {
-    "/": () => <div>all players</div>,
-    "/:id": ({ id }) => <div>{id}</div>,
-    "/*": () => <div>error</div>
-  };
-
-  const routeResult = useRoutes(routes);
-
-  return <Fragment>{routeResult}</Fragment>;
+  return (
+    <Fragment>
+      <header>
+        <NavBar />
+      </header>
+      <main>{routeResult}</main>
+      <footer></footer>
+    </Fragment>
+  );
 };
 
 export default App;

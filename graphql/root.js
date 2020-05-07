@@ -10,6 +10,19 @@ var root = {
       throw err;
     }
   },
+  playerTable: async ({ page, perPage, sort, sortDirection }) => {
+    try {
+      const players = await playerQueries.paginateSortPlayers(
+        page,
+        perPage,
+        sort,
+        sortDirection
+      );
+      return players;
+    } catch (err) {
+      throw err;
+    }
+  },
   player: async ({ id }) => {
     try {
       const player = await playerQueries.getPlayer(id);
