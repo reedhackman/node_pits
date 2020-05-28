@@ -1,5 +1,16 @@
 const db = require("../../db");
 
+const numPlayers = async () => {
+  try {
+    const query = `SELECT COUNT(*) FROM players`;
+    const res = await db.query(query, []);
+    const data = res.rows[0].count;
+    return parseInt(data);
+  } catch (err) {
+    throw err;
+  }
+};
+
 const listPlayers = async () => {
   try {
     const res = await db.query("SELECT * FROM players", []);
@@ -79,4 +90,5 @@ module.exports = {
   updatePlayer: updatePlayer,
   listPlayers: listPlayers,
   paginateSortPlayers: paginateSortPlayers,
+  numPlayers: numPlayers,
 };

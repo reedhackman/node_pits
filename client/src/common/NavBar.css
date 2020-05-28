@@ -1,0 +1,26 @@
+.NavBar {
+  height: 70px;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 10px 0px #333;
+  border-bottom: solid #bf370d 1px;
+  background-color: #e41;
+}
+
+.NavBar-content {
+  width: 1200px;
+  margin: auto;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.NavBar-left {
+  width: 100%;
+}
+
+.NavBar-right {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}

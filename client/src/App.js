@@ -3,10 +3,10 @@ import { useRoutes } from "hookrouter";
 import NavBar from "./common/NavBar";
 import AllPlayers from "./players/AllPlayers";
 import SpecificPlayer from "./players/SpecificPlayer";
-import Home from "./home/Home";
+import Home from "./misc/Home";
 import AllDecks from "./decks/AllDecks";
 import SpecificDeck from "./decks/SpecificDeck";
-// import "./App.css";
+import "./App.css";
 
 const App = () => {
   const routes = {
@@ -19,6 +19,9 @@ const App = () => {
     "/decks/The%20Free%20Folk": () => (
       <SpecificDeck faction={null} agenda={"The Free Folk"} />
     ),
+    "/decks/:faction": ({ faction }) => <div>{faction}</div>,
+    "/login": () => <div>login</div>,
+    "/signup": () => <div>signup</div>,
     "/": () => <Home />,
     "*": () => <div>ERROR</div>,
   };
@@ -28,7 +31,9 @@ const App = () => {
       <header>
         <NavBar />
       </header>
-      <main>{routeResult}</main>
+      <main>
+        <div className="content">{routeResult}</div>
+      </main>
       <footer></footer>
     </Fragment>
   );

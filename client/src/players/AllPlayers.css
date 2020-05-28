@@ -1,0 +1,29 @@
+.table {
+  width: 800px;
+  margin: auto;
+}
+
+.row {
+  height: 30px;
+}
+
+.name {
+}
+
+.rating {
+}
+
+.percent {
+}
+
+.played {
+}
+
+.pagination {
+  width: 800px;
+  padding-top: 40px;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
