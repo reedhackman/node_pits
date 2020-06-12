@@ -7,7 +7,7 @@
 }
 
 .NavBar-content {
-  width: 1200px;
+  width: 1000px;
   margin: auto;
   height: 100%;
   display: flex;
@@ -23,4 +23,16 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+}
+
+.NavBar-home {
+  font-size: 36px;
+  text-decoration: none;
+  color: white;
+}
+
+.NavBar-link {
+  font-size: 16px;
+  text-decoration: none;
+  color: white;
 }

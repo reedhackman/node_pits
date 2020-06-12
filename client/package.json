@@ -6,7 +6,9 @@
     "hookrouter": "^1.2.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "0.9.5"
+    "react-redux": "^7.2.0",
+    "react-scripts": "0.9.5",
+    "redux": "^4.0.5"
   },
   "devDependencies": {},
   "scripts": {
