@@ -23,9 +23,10 @@ const listPlayers = async () => {
 
 const paginateSortPlayers = async (page, perPage, sort, sortDirection) => {
   try {
-    const query = `SELECT * FROM players ORDER BY ${sort} ${sortDirection} LIMIT ${perPage} OFFSET ${
-      (page - 1) * perPage
-    }`;
+    const sortQuery = sort === "opponents" ? "cardinality(opponents)" : sort;
+    const query = `SELECT * FROM players ORDER BY ${sortQuery} ${sortDirection} LIMIT ${perPage} OFFSET ${(page -
+      1) *
+      perPage}`;
     const res = await db.query(query, []);
     const data = res.rows;
     return data;
@@ -48,6 +49,7 @@ const getPlayer = async (id, name = null) => {
         losses: 0,
         played: 0,
         percent: 0,
+        opponents: []
       };
     }
     return player;
@@ -59,7 +61,7 @@ const getPlayer = async (id, name = null) => {
 const createPlayer = async (id, name) => {
   try {
     await db.query(
-      "INSERT INTO players (id, name, wins, losses, rating, played, percent) VALUES ($1, $2, 0, 0, 1200, 0, 0)",
+      "INSERT INTO players (id, name, wins, losses, rating, played, percent, opponents) VALUES ($1, $2, 0, 0, 1200, 0, 0, '{}')",
       [id, name]
     );
   } catch (err) {
@@ -67,10 +69,10 @@ const createPlayer = async (id, name) => {
   }
 };
 
-const updatePlayer = async (player) => {
+const updatePlayer = async player => {
   try {
     await db.query(
-      "UPDATE players SET wins = $1, losses = $2, rating = $3, played = $5, percent = $6 WHERE id = $4",
+      "UPDATE players SET wins = $1, losses = $2, rating = $3, played = $5, percent = $6, opponents = $7 WHERE id = $4",
       [
         player.wins,
         player.losses,
@@ -78,6 +80,7 @@ const updatePlayer = async (player) => {
         player.id,
         player.played,
         player.percent,
+        player.opponents
       ]
     );
   } catch (err) {
@@ -90,5 +93,5 @@ module.exports = {
   updatePlayer: updatePlayer,
   listPlayers: listPlayers,
   paginateSortPlayers: paginateSortPlayers,
-  numPlayers: numPlayers,
+  numPlayers: numPlayers
 };

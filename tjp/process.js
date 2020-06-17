@@ -2,7 +2,7 @@ const gameQueries = require("../db/queries/games");
 const playerQueries = require("../db/queries/players");
 const deckQueries = require("../db/queries/decks");
 
-const processGames = async (games) => {
+const processGames = async games => {
   try {
     for (var i = 0; i < games.length; i++) {
       await parseGame(games[i]);
@@ -12,7 +12,7 @@ const processGames = async (games) => {
   }
 };
 
-const parseGame = async (game) => {
+const parseGame = async game => {
   try {
     if (game.p1_id < 1 || game.p2_id < 1) return;
     game.game_status === 100
@@ -23,7 +23,7 @@ const parseGame = async (game) => {
   }
 };
 
-const processComplete = async (game) => {
+const processComplete = async game => {
   try {
     let [winner, winningDeck, loser, losingDeck] = await determineWinner(game);
     if (winner && loser) {
@@ -79,7 +79,7 @@ const createComplete = async (
   }
 };
 
-const determineWinner = async (game) => {
+const determineWinner = async game => {
   try {
     if (game.p1_points === game.p2_points) {
       return [null, null, null, null];
@@ -138,6 +138,7 @@ const processPlayerChange = async (winner, loser) => {
     updateRating(winner, loser);
     updatePercentPlayed(winner);
     updatePercentPlayed(loser);
+    updateOpponents(winner, loser);
     await playerQueries.updatePlayer(winner);
     await playerQueries.updatePlayer(loser);
   } catch (err) {
@@ -145,7 +146,13 @@ const processPlayerChange = async (winner, loser) => {
   }
 };
 
-const updatePercentPlayed = (player) => {
+const updateOpponents = (a, b) => {
+  if (b.opponents.includes(a.id)) return;
+  b.opponents.push(a.id);
+  a.opponents.push(b.id);
+};
+
+const updatePercentPlayed = player => {
   player.played = player.wins + player.losses;
   player.percent = player.wins / player.played;
 };
@@ -163,7 +170,7 @@ const updateRating = (winner, loser) => {
   loser.rating = newLoserRating;
 };
 
-const processIncomplete = async (game) => {
+const processIncomplete = async game => {
   try {
     await gameQueries.createIncomplete(game);
   } catch (err) {
@@ -172,5 +179,5 @@ const processIncomplete = async (game) => {
 };
 
 module.exports = {
-  processGames: processGames,
+  processGames: processGames
 };

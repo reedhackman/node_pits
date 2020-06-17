@@ -25,6 +25,7 @@ var schema = buildSchema(`
     percent: Float!
     played: Int!
     games: [Game]
+    opponents: [Int]
   }
 
   type Deck {

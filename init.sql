@@ -60,7 +60,4 @@ UPDATE decks SET percent = cast(wins as decimal) / played;
 ALTER TABLE decks ALTER COLUMN percent SET NOT NULL;
 ALTER TABLE decks ALTER COLUMN played SET NOT NULL;
 
-CREATE TABLE users {
-  email text NOT NULL
-  password text NOT NULL
-}
+ALTER TABLE players ADD COLUMN opponents integer[];

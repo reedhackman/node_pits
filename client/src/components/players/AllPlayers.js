@@ -32,6 +32,7 @@ const AllPlayers = () => {
           rating
           played
           percent
+          opponents
         }
       }`;
       const data = await fetchGraphQL(query);
@@ -43,7 +44,7 @@ const AllPlayers = () => {
     setNumPages(Math.ceil(numPlayers / perPage));
   }, [perPage]);
 
-  const handlePage = (action) => {
+  const handlePage = action => {
     if (action === "first") {
       setPage(1);
     } else if (action === "last") {
@@ -55,7 +56,7 @@ const AllPlayers = () => {
     }
   };
 
-  const handleSort = (newSort) => {
+  const handleSort = newSort => {
     if (newSort === sort) {
       if (sortDirection === "asc") setSortDirection("desc");
       else setSortDirection("asc");
@@ -65,8 +66,6 @@ const AllPlayers = () => {
       else setSortDirection("desc");
     }
   };
-
-  console.log(page);
 
   return (
     <Fragment>
@@ -85,10 +84,13 @@ const AllPlayers = () => {
             <th onClick={() => handleSort("played")} className="played">
               Played
             </th>
+            <th onClick={() => handleSort("opponents")} className="opponents">
+              Opponents
+            </th>
           </tr>
         </thead>
         <tbody>
-          {players.map((player) => (
+          {players.map(player => (
             <tr key={player.id} className="row">
               <td className="name">
                 <A href={`/players/${player.id}`}>{player.name}</A>
@@ -98,6 +100,7 @@ const AllPlayers = () => {
                 {Math.round(1000 * player.percent) / 10}
               </td>
               <td className="played">{player.played}</td>
+              <td className="opponents">{player.opponents.length}</td>
             </tr>
           ))}
         </tbody>

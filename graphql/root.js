@@ -53,7 +53,7 @@ var root = {
   decks: async () => {
     try {
       const decks = await deckQueries.listDecks();
-      return decks.filter((deck) => deck.agenda);
+      return decks.filter(deck => deck.agenda);
     } catch (err) {
       throw err;
     }
@@ -65,7 +65,7 @@ var root = {
     } catch (err) {
       throw err;
     }
-  },
+  }
 };
 
 module.exports = { root };
